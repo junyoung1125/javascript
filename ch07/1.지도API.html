@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Kakao 지도 시작하기</title>
+    <!--
+        날짜: 2025/02/20
+        이름: 변준영
+        내용: 지도 API 실습하기
+
+
+        1) 카카오 개발자 플랫폼 로그인
+        2) 내 애플리케이션 추가하기
+        3) 플랫폼 > Web > http://127.0.0.1:5500 등록
+        4) 카카오맵 > 활성화 설정
+        5) 앱키 > Javascripts인증키 확인
+    -->
+</head>
+<body>
+    <h1>1. 지도 API</h1>
+
+    <h4>지도 생성하기</h4>
+    <div id="map1" style="width:500px; height:400px;"></div>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=799ad588c19ac67d659e6c3c88992b62"></script>
+    <script>
+        var container = document.getElementById("map1"); // 지도를 담을 영역의 DOM 레퍼런스
+        var options = {
+            center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도 중심 좌표 (제주도)
+            level: 3 // 확대, 축소 레벨
+        };
+        var map = new kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
+    </script>
+
+    <h4>지도 마커 찍기</h4>
+    <div id="map2" style="width:500px; height:400px;"></div>
+
+    <script>
+        var map2 = new kakao.maps.Map(document.getElementById("map2"), {
+            center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울 중심 좌표
+            level: 3
+        });
+
+        // 마커 추가
+        var marker = new kakao.maps.Marker({
+            position: new kakao.maps.LatLng(37.5665, 126.9780) // 서울 마커
+        });
+        marker.setMap(map2);
+    </script>
+
+    <h4>해운대, 광안리, 송정 해수욕장 마커 찍기</h4>
+    <div id="map3" style="width:500px; height:400px;"></div>
+
+    <script>
+        var map3 = new kakao.maps.Map(document.getElementById("map3"), {
+            center: new kakao.maps.LatLng(35.1595, 129.1604), // 해운대 중심 좌표
+            level: 10
+        });
+
+        // 마커 좌표 배열
+        var locations = [
+            { title: "해운대 해수욕장", latlng: new kakao.maps.LatLng(35.1587, 129.1603) },
+            { title: "광안리 해수욕장", latlng: new kakao.maps.LatLng(35.1532, 129.1185) },
+            { title: "송정 해수욕장", latlng: new kakao.maps.LatLng(35.1796, 129.1998) }
+        ];
+
+        // 마커 추가
+        locations.forEach(function(loc) {
+            var marker = new kakao.maps.Marker({
+                position: loc.latlng,
+                map: map3
+            });
+
+            // 마커 클릭 시 인포윈도우 표시
+            var infowindow = new kakao.maps.InfoWindow({
+                content: `<div style="padding:5px;">${loc.title}</div>`
+            });
+
+            kakao.maps.event.addListener(marker, "click", function() {
+                infowindow.open(map3, marker);
+            });
+        });
+    </script>
+</body>
+</html>
