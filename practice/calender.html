@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FullCalendar 테스트</title>
+    
+    <!-- FullCalendar CDN 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js" defer></script>
+
+    <style>
+        #calendar {
+            max-width: 900px;
+            margin: 40px auto;
+        }
+        .fc-col-header-cell {
+            background-color: #084A87 !important;
+            color: white !important;
+        }
+        .fc-day-today {
+            background-color: #e6edf3 !important;
+        }
+        .fc-day-number {
+            background-color: #084A87 !important;
+            color: white !important;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: flex-start; /* 왼쪽 정렬 */
+            align-items: center;
+            border-radius: 5px;
+            padding-left: 5px; /* 숫자 왼쪽 여백 */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 캘린더가 들어갈 div -->
+    <div id="calendar"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let calendarEl = document.getElementById("calendar");
+            let calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: "dayGridMonth",
+                selectable: true,
+                editable: true,
+                headerToolbar: false,
+                datesSet: function(info) {
+                    updateTitle(info);
+                }
+            });
+
+            // 커스텀 네비게이션 추가
+            let customHeader = document.createElement("div");
+            customHeader.innerHTML = ` 
+                <div style="display: flex; justify-content: center; align-items: center; gap: 20px; font-size: 20px; margin-bottom: 10px;">
+                    <button id="prevBtn" style="border: none; background: none; font-size: 24px; cursor: pointer;">‹</button>
+                    <span id="customTitle"></span>
+                    <button id="nextBtn" style="border: none; background: none; font-size: 24px; cursor: pointer;">›</button>
+                </div>
+            `;
+            calendarEl.parentNode.insertBefore(customHeader, calendarEl);
+
+            // 제목 업데이트 함수
+            function updateTitle(info) {
+                let currentDate = info.view.currentStart;
+                let formattedTitle = `${currentDate.getFullYear()}.${(currentDate.getMonth() + 1).toString().padStart(2, '0')}`;
+                document.getElementById("customTitle").innerText = formattedTitle;
+            }
+
+            // 날짜 이동 시 제목 업데이트
+            document.getElementById("prevBtn").addEventListener("click", function () {
+                calendar.prev();
+                setTimeout(() => updateTitle(calendar), 10); // 제목 갱신
+            });
+
+            document.getElementById("nextBtn").addEventListener("click", function () {
+                calendar.next();
+                setTimeout(() => updateTitle(calendar), 10); // 제목 갱신
+            });
+
+            // 캘린더 렌더링 후 초기 제목 업데이트
+            calendar.render();
+            setTimeout(() => updateTitle(calendar), 10);
+        });
+    </script>
+
+</body>
+</html>
